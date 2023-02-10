@@ -1,6 +1,6 @@
 # TCMSP-Spider
 
-爬取[TCMSP数据库](https://www.tcmsp-e.com)中的数据
+爬取[TCMSP数据库](https://www.tcmsp-e.com)中的数据。可根据药名查询对应的成分、靶点和疾病信息，也可直接下载“所有的”药名、成分、靶点和疾病信息。配置好需要查询与下载的药物列表即可，不用手动传入 `token` 参数。
 
 ## 1 使用方法
 
