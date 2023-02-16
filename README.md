@@ -1,20 +1,26 @@
 # TCMSP-Spider
 
-爬取[TCMSP数据库](https://www.tcmsp-e.com)中的数据。可根据药名查询对应的成分、靶点和疾病信息，也可直接下载“所有的”药名、成分、靶点和疾病信息。配置好需要查询与下载的药物列表即可，不用手动传入 `token` 参数。
+TCMSP-Spider is a Python tool for extracting data from [TCMSP](https://www.tcmsp-e.com) (Traditional Chinese Medicine Systems Pharmacology Database and Analysis Platform) website. It allows you to search for a specific drug and retrieve its related ingredients, targets, and diseases. Additionally, you can download "all" data of drugs, ingredients, targets, and diseases. The tool can be easily configured to query and download a list of drugs, eliminating the need to manually pass `token` parameters.
 
-## 1 使用方法
+## Installation
 
-安装依赖
+1. Clone the repository and navigate to the project directory:
 
 ```
 git clone https://github.com/shujuecn/TCMSP-Spider.git
 cd TCMSP-Spider
+```
+
+2. Install the required dependencies:
+
+```
 pip3 install -r requirements.txt
 ```
 
-### 1.1 根据药名查数据
+## Usage
+### Searching data by drug name
 
-在 `herb_list.txt` 中填写待查询的药物名称，允许填写多个药物，允许中文、拼音或拉丁文：
+1. Add the names of the drugs you want to search for in `herb_list.txt`. You can add multiple drugs, and the names can be written in Chinese, Pinyin or Latin, for example:
 
 ```
 麻黄
@@ -22,43 +28,46 @@ Baizhu
 Citrus Reticulata
 ```
 
-运行程序：
+2. Run the following command to start the search process:
 
 ```
 python3 src/search_save_herbs.py
 ```
 
-程序会自动获取 `token` 值，然后根据 `herb_list.txt` 中的药物名称，查询对应的所有药物。因为同一中文名或拼音名，可能对应多个药物，例如：
+The program will automatically obtain the `token` value and query all the drugs specified in `herb_list.txt`. Because a single Chinese or Pinyin name may correspond to multiple drugs, the program will download the ingredients, targets, and diseases of each drug, and save them in an Excel (.xlsx) file in the `data/spider_data` folder.
 
 ```
 麻黄 -> 麻黄、麻黄根
 fuzi -> Baifuzi、Difuzi、Fuzi、Laifuzi
 ```
+### Downloading "all" data
 
-程序根据查询结果，下载每一味药的 **Ingredients** 、 **Targets** 和 **Diseases** 数据，并以 `.xlsx` 文件格式保存在 `data/spider_data` 文件夹中。
-
-### 1.2 下载“所有”数据
-
-在[TCMSP Browse Database](https://tcmsp-e.com/browse.php?qc=herbs)页面，该站提供了 **All herbs**、**All ingredients**、**All targets** 和 **All diseases** 四项数据，分别包含“所有的”药名信息、药物成分信息、药物靶点信息和疾病信息。可以使用以下命令，下载这些数据，并以 `.xlsx` 文件格式保存在 `data/sample_data` 文件夹中。
+On the [TCMSP Browse Database](https://tcmsp-e.com/browse.php?qc=herbs) page, the website provides four types of data, including "all" drugs, ingredients, targets, and diseases. You can use the following command to download these data and save them in an Excel (.xlsx) file in the `data/sample_data` folder.
 
 ```
 python3 src/get_all_data.py
 ```
 
-### 1.3 查询对应关系
+### Querying relationships
 
-基于“下载所有数据”，可以在药名信息、药物成分信息、药物靶点信息和疾病信息中，根据任一元素查找对应的其他元素。例如：
+Using the data downloaded with "Get all data," you can use the program to query the relationships between drugs, ingredients, targets, and diseases. For example:
 
 ```
-Target ID : TAR00006
+Target ID: TAR00006
 
-Related diseases : Chronic inflammatory diseases...
-Related ingredients : cyanidol...
-Related herbs : 	Asteris Radix Et Rhizoma...
+Related diseases: Chronic inflammatory diseases...
+Related ingredients: cyanidol...
+Related herbs: Asteris Radix Et Rhizoma...
 ```
 
-在一些特殊的情况下，这是有用的。该程序将提供此查询功能。
-## 2 更新记录
+While it is not currently available in the current version of the program, in the future, it may be possible to use the data downloaded using "Get all data" to query for relationships between different elements, such as finding all the ingredients related to a certain disease or target. This feature is not yet implemented in the current version, but may be added in a future update.
 
-* 2023/02/09：首次提交，已完成药名查询和药物数据下载功能。
-* 2023/02/10：重构项目组成模式，完成“下载所有数据”功能。
+## LICENSE
+
+This project is released under the MIT open source license. If you have any suggestions or feedback, please feel free to submit an issue or pull request.
+
+## Changelog
+
+* 2023/02/09: Initial commit. Completed the search function and data download function.
+* 2023/02/10: Refactored the project structure and added the "download all data" function.
+
