@@ -1,3 +1,4 @@
+.venv
 .DS_Store
 */.DS_Store
 
@@ -9,3 +10,7 @@ build/
 .tox/
 .env
 *.log
+
+# result files
+data/spider_data/*.xlsx
+data/spider_data/*.sdf

@@ -7,7 +7,7 @@ from tcmsp import TcmspSpider
 def get_data(type):
 
     tcmsp = TcmspSpider()
-    url = f"https://tcmsp-e.com/browse.php?qc={type}"
+    url = f"https://old.tcmsp-e.com/browse.php?qc={type}"
 
     # 获取页面
     html = tcmsp.get_response(url)
