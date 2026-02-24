@@ -1,10 +1,10 @@
 #!/usr/local/bin/python3
 # -*- encoding: utf-8 -*-
-'''
+"""
 @Brief  : TCMSP数据库爬虫
 @Time   : 2023/02/09 19:39:55
 @Author : https://github.com/shujuecn
-'''
+"""
 
 import os
 import re
@@ -13,12 +13,14 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup as bs
 import lxml.html
-
+from rdkit import Chem
+import tempfile
+from tqdm import tqdm
 
 class TcmspSpider:
     def __init__(self):
 
-        self.root_url = "https://www.tcmsp-e.com/tcmspsearch.php"
+        self.root_url = "https://old.tcmsp-e.com/tcmspsearch.php"
         self.headers = {
             "User-Agent": "Mozilla/5.0 (Linux; Android 6.0; NCE-AL10 Build/HUAWEINCE-AL10; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/55.0.2883.91 Mobile Safari/537.36",
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -129,7 +131,7 @@ class TcmspSpider:
                 ingredients_data,
                 file_path=f"{self.spider_file_path}",
                 file_name=f"{pinyin_name}_ingredients",
-                index="MOL_ID"
+                index="MOL_ID",
             )
 
             # 导出 Targets
@@ -139,7 +141,7 @@ class TcmspSpider:
                 targets_data,
                 file_path=f"{self.spider_file_path}",
                 file_name=f"{pinyin_name}_targets",
-                index="MOL_ID"
+                index="MOL_ID",
             )
 
             # 导出 Disease
@@ -150,9 +152,11 @@ class TcmspSpider:
                 disease_data,
                 file_path=f"{self.spider_file_path}",
                 file_name=f"{pinyin_name}_disease",
-                index=False
+                index=False,
             )
 
+        print("正在导出sdf文件，过程较慢，耐心等待...")
+        self.mol2sdf(ingredients_data, f"{self.spider_file_path}{pinyin_name}.sdf")
         print(f"{cn_name}下载完成！\n")
 
     def get_json_data(self, html, num, pattern):
@@ -200,3 +204,36 @@ class TcmspSpider:
 
         else:
             print(f"未查询到{file_name}的信息！")
+
+    def mol2sdf(self, data, output_path):
+        df = pd.DataFrame(data)
+        mol_ids = df["MOL_ID"].to_list()
+
+        with Chem.SDWriter(output_path) as writer:
+            for mol_id in tqdm(mol_ids, desc="导出进度"):
+                mol2_url = f"https://old.tcmsp-e.com/tcmspmol/{mol_id}.mol2"
+                response = requests.get(mol2_url)
+                if response.status_code == 200:
+                    mol2_content = response.text
+                    with tempfile.NamedTemporaryFile(
+                        suffix=".mol2", delete=False
+                    ) as temp_file:
+                        temp_file.write(mol2_content.encode("utf-8"))
+                        temp_file.flush()
+                        temp_file_path = temp_file.name
+
+                    try:
+                        mol = Chem.MolFromMol2File(
+                            temp_file_path, sanitize=False, cleanupSubstructures=False
+                        )
+                        if mol:
+                            writer.write(mol)
+                        else:
+                            print(f"Failed to convert MOL2 to SDF for MOL_ID: {mol_id}")
+                    except Exception as e:
+                        print(f"Error processing MOL_ID {mol_id}: {e}")
+                    finally:
+                        os.remove(temp_file_path)
+                else:
+                    print(f"Failed to download MOL2 file for MOL_ID: {mol_id}")
+        print(f"已保存：{output_path}")
