@@ -1,3 +1,16 @@
+> ⚠️ **归档说明 / Archived**
+>
+> 本项目（`TCMSP-Spider`）已停止维护并进入归档状态（**不再更新、不再适配 TCMSP 新版页面/接口变化**）。
+>
+> ✅ 请迁移至新项目：**TCMSP-Exporter**（浏览器内运行的 Tampermonkey 油猴脚本，替代旧版 Python 爬虫导出方案）  
+> 新仓库地址：https://github.com/shujuecn/TCMSP-Exporter
+>
+> ---
+>
+> This repository is **archived** and **no longer maintained**.  
+> Please use the replacement project: **TCMSP-Exporter**  
+> https://github.com/shujuecn/TCMSP-Exporter
+
 # TCMSP-Spider
 
 TCMSP-Spider is a Python tool for extracting data from [TCMSP](https://www.tcmsp-e.com) (Traditional Chinese Medicine Systems Pharmacology Database and Analysis Platform) website. It allows you to search for a specific drug and retrieve its related ingredients, targets, and diseases. Additionally, you can download "all" data of drugs, ingredients, targets, and diseases. The tool can be easily configured to query and download a list of drugs, eliminating the need to manually pass `token` parameters.
